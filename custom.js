@@ -60,7 +60,7 @@ function handleFormSubmission({
               action: 'validate_captcha',
             })
             .then(function (token) {
-              if (formSelector === '#validator-email-form') {
+              if (formSelector === '#bug-bounty-email-Form') {
                 form.append(
                   '<input id="queryType" type="hidden" name="queryType" value="4">'
                 );
