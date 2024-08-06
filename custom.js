@@ -60,6 +60,11 @@ function handleFormSubmission({
               action: 'validate_captcha',
             })
             .then(function (token) {
+              if (formSelector === '#validator-email-form') {
+                form.append(
+                  '<input id="queryType" type="hidden" name="queryType" value="4">'
+                );
+              }
               if (token) {
                 form.append(
                   '<input id="g-recaptcha-response" type="hidden" name="g-recaptcha-response" value="' +
@@ -151,17 +156,22 @@ $(document).ready(function () {
         s = '';
       for (let i = 1; i <= 5; i++)
         i <= t
-          ? (s += '<img src="images/full-89.svg" />')
+          ? (s +=
+              '<img src="https://edexa-portal-beta.s3.ap-south-1.amazonaws.com/edexanetwork/images/full-89.svg" />')
           : i == t + 1 && !0 == a
-          ? (s += '<img src="images/Group 89.svg" />')
-          : (s += '<img src="images/Path 102.svg" />');
+          ? (s +=
+              '<img src="https://edexa-portal-beta.s3.ap-south-1.amazonaws.com/edexanetwork/images/Group+89.svg" />')
+          : (s +=
+              '<img src="https://edexa-portal-beta.s3.ap-south-1.amazonaws.com/edexanetwork/images/Path+102.svg" />');
       return s;
     }
 
     function gSDap(e) {
       let singleAppId = e;
       console.log('singleAppId', singleAppId);
-      let t = new URL('https://edexawebsiteapi.io-world.com/marketplace/DApps/' + e),
+      let t = new URL(
+          'https://edexawebsiteapi.io-world.com/marketplace/DApps/' + e
+        ),
         a = new XMLHttpRequest();
       a.open('GET', t, !0),
         (a.onload = function () {
@@ -324,7 +334,9 @@ $(document).ready(function () {
 
     // Dapps API Calling
     function getDappsTable() {
-      let newsUrl = new URL('https://edexawebsiteapi.io-world.com/marketplace/DApps');
+      let newsUrl = new URL(
+        'https://edexawebsiteapi.io-world.com/marketplace/DApps'
+      );
       let request = new XMLHttpRequest();
       let url = newsUrl;
       request.open('GET', url, true);
@@ -364,7 +376,7 @@ $(document).ready(function () {
               gRSY(singleDApp.rating) +
               `</td><td><span class="` +
               statusDetail +
-              `">●</span></td></tr>`;
+              `">â—</span></td></tr>`;
             $('.DAppsBody').append($(DAppBody));
             $('#DAppsListItem').append(
               '<option value="' +
@@ -412,7 +424,7 @@ $(document).ready(function () {
               gRSY(singleDApp.rating) +
               `</td><td><span class="` +
               statusDetail +
-              `">●</span></td></tr>`;
+              `">â—</span></td></tr>`;
             $('.DAppsBody').append($(DAppBody));
             $('#DAppsListItem').append(
               '<option value="' +
@@ -517,15 +529,16 @@ $(document).ready(function () {
 
     gTTDap();
 
-    $('.slider').slick({
-      infinite: true,
-      arrows: false,
-      dots: false,
-      autoplay: false,
-      speed: 800,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-    });
+    // commenting out as the error of dapps form is not opening
+    // $('.slider').slick({
+    //   infinite: true,
+    //   arrows: false,
+    //   dots: false,
+    //   autoplay: false,
+    //   speed: 800,
+    //   slidesToShow: 1,
+    //   slidesToScroll: 1,
+    // });
     //ticking machine
     var percentTime;
     var tick;
@@ -769,7 +782,8 @@ $(document).ready(function () {
       $('.pagination-div').css('display', 'flex');
       $.ajax({
         type: 'get',
-        url: 'https://edexawebsiteapi.io-world.com/blogs?limit=5&page=' + pagenum,
+        url:
+          'https://edexawebsiteapi.io-world.com/blogs?limit=5&page=' + pagenum,
         dataType: 'json',
         success: function (data) {
           /*if (data.data.generalBlog.length <= perpage) {
@@ -847,6 +861,101 @@ $(document).ready(function () {
       createpagination(pagenum);
       fetch_data(pagenum);
     }
+
+    $(document).ready(function () {
+      $('#searchNewsName').on('keyup', function () {
+        searchAPI(this.value);
+      });
+    });
+
+    function searchAPI(searchText) {
+      $('.loder').css('display', 'flex');
+      $('.pagination-div').css('display', 'flex');
+      var perpage = 4;
+      var pagenum = 1;
+      if (searchText == '') {
+        $('.latest-news-list-2').html('');
+        createpagination(pagenum);
+        fetch_data(perpage, pagenum);
+        $('.pagination-div').css('display', 'flex');
+        $('.loder').css('display', 'none');
+      }
+      $.ajax({
+        type: 'get',
+        url: 'https://edexawebsiteapi.io-world.com/blogs?search=' + searchText,
+        dataType: 'json',
+        success: function (data) {
+          $('.loder').css('display', 'none');
+
+          if (data.data.generalBlog.length <= perpage) {
+            $('.pagination-div').css('display', 'none');
+          } else {
+            $('.pagination-div').css('display', 'flex');
+          }
+
+          createpagination(pagenum);
+          $('.latest-news-list-2').html('');
+          data.data.generalBlog.forEach((latestNewsSingleNews) => {
+            var template4 =
+              `<a href="https://work.edexa.network/news-detail?title=` +
+              latestNewsSingleNews.title.split(' ').join('-') +
+              `&id=` +
+              latestNewsSingleNews.id +
+              `" class="link-block-15 w-inline-block">
+              <div data-w-id="335d0e66-bdae-01a3-d690-538783c710ed" class="latest-news-item-2">
+                <div class="latest-news-item-image-3"><img src="` +
+              latestNewsSingleNews.blogImage +
+              `" loading="lazy" sizes="(max-width: 479px) 83vw, (max-width: 767px) 90vw, (max-width: 991px) 32vw, (max-width: 1439px) 317.484375px, 488.140625px" srcset="` +
+              latestNewsSingleNews.blogImage +
+              ` 500w, ` +
+              latestNewsSingleNews.blogImage +
+              ` 800w, ` +
+              latestNewsSingleNews.blogImage +
+              ` 1080w, ` +
+              latestNewsSingleNews.blogImage +
+              ` 1600w, ` +
+              latestNewsSingleNews.blogImage +
+              ` 1640w" alt="" class="latest-news-item-image-single-2">
+                  <h6 class="latest-news-item-image-single-title-2">` +
+              latestNewsSingleNews.category.name +
+              `</h6>
+                </div>
+                <div class="latest-news-item-content">
+                  <div class="latest-news-item-date-time">
+                    <h5 class="heading-11latest-news-item-3">` +
+              getDateFormate(latestNewsSingleNews.createdAt) +
+              `</h5>
+                  </div>
+                  <div class="latest-news-item-title">
+                    <h2 class="heading-10-latest-news-item-3">` +
+              latestNewsSingleNews.title +
+              `</h2>
+                  </div>
+                  <div class="latest-news-item-description">
+                    <div class="text-block-68">` +
+              latestNewsSingleNews.shortDescription +
+              `</div>
+                  </div>
+                </div>
+              </div>
+            </a>`;
+            $('.latest-news-list-2').append($(template4));
+          });
+
+          if (data.data.generalBlog.length == 0) {
+            $('.latest-news-list-2').html(
+              "<div style='text-align: center;'>No data Found......!</div>"
+            );
+          }
+        },
+        error: function () {
+          $('.latest-news-list-2').html(
+            "<div style='text-align: center;'>No data Found......!</div>"
+          );
+          $('.pagination-div').css('display', 'none');
+        },
+      });
+    }
   }
 
   // News Details API Calling
@@ -879,7 +988,7 @@ $(document).ready(function () {
           let template =
             `<div class="back-button-2">
             <a href="news" class="link-block-2-single-news w-inline-block">
-              <h1 class="heading-196">← Back to News</h1>
+              <h1 class="heading-196">â† Back to News</h1>
             </a>
           </div>
           <div class="single-blog-title">
@@ -937,6 +1046,55 @@ $(document).ready(function () {
       request.send();
     }
     getSingleNews();
+  }
+
+  // Blogs API
+  if (document.querySelector('.medium-container')) {
+    function getMediumBlogs() {
+      let blogsUrl = new URL(
+        'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fmedium.com%2Ffeed%2F%40edeXablockchain'
+      );
+      let request = new XMLHttpRequest();
+      let url = blogsUrl;
+      request.open('GET', url, true);
+      request.onload = function () {
+        let data = JSON.parse(this.response);
+        console.log('data', data);
+        for (let i = 0; i < 3; i++) {
+          let title = data.items[i].title;
+          let pubDate = data.items[i].pubDate;
+          let description = data.items[i].description;
+          let today = new Date(pubDate).toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
+          let link = data.items[i].link;
+          let thumbnail = data.items[i].thumbnail;
+          if (request.status >= 200 && request.status < 400) {
+            let template =
+              '<div id="w-node-_1b1966db-b119-78de-99b9-5c33c655e801-c6a952d8" role="listitem" class="collection-item w-dyn-item"><a data-w-id="1b1966db-b119-78de-99b9-5c33c655e802" style="-webkit-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0px, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" href=" ' +
+              link +
+              '" class="link-image-blog w-inline-block"><img src="' +
+              thumbnail +
+              '" loading="lazy" alt="" class="image-blog w-dyn-bind-empty"><div class="bg-blog"></div></a><div data-w-id="1b1966db-b119-78de-99b9-5c33c655e805" style="transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); opacity: 1; transform-style: preserve-3d;" class="block-blog"><div class="date-blog">' +
+              today +
+              '</div><a href="' +
+              link +
+              '" class="link-heading-blog w-inline-block"><h6 class="heading-blog">' +
+              title +
+              '</h6><div class="blogdescription"></div></a><a href=" ' +
+              link +
+              '" class="blog-button w-button"><strong class="bold-text-61">Read more</strong></a></div></div>';
+            $('.medium-container').prepend($(template));
+          }
+        }
+      };
+      request.send();
+    }
+
+    getMediumBlogs();
   }
 
   let styles = `
