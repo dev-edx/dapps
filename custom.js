@@ -95,7 +95,6 @@ function handleFormSubmission({
         var formData = form.serializeArray();
         // Remove empty optional fields
         optionalFields.forEach(function (fieldName) {
-          // console.log('fieldName', fieldName);
           var field = $('#' + fieldName).val();
           if (!field) {
             formData = formData.filter(function (item) {
@@ -147,6 +146,19 @@ function resetForm(formSelector) {
   $(formSelector).trigger('reset'); // Reset the form fields
 }
 
+function getApiUrl() {
+  const currentUrl = window.location.href;
+  let apiUrl;
+
+  if (currentUrl.startsWith('https://work.edexa.network/')) {
+    apiUrl = 'https://edexawebsiteapi.io-world.com';
+  } else {
+    apiUrl = 'https://edexawebsiteapi.edexa.com';
+  }
+
+  return apiUrl;
+}
+
 $(document).ready(function () {
   // Dapps API Calling
   if (document.querySelector('.DAppsBody')) {
@@ -169,9 +181,7 @@ $(document).ready(function () {
     function gSDap(e) {
       let singleAppId = e;
       console.log('singleAppId', singleAppId);
-      let t = new URL(
-          'https://edexawebsiteapi.io-world.com/marketplace/DApps/' + e
-        ),
+      let t = new URL(`${getApiUrl()}/marketplace/DApps/` + e),
         a = new XMLHttpRequest();
       a.open('GET', t, !0),
         (a.onload = function () {
@@ -334,9 +344,7 @@ $(document).ready(function () {
 
     // Dapps API Calling
     function getDappsTable() {
-      let newsUrl = new URL(
-        'https://edexawebsiteapi.io-world.com/marketplace/DApps'
-      );
+      let newsUrl = new URL(`${getApiUrl()}/marketplace/DApps`);
       let request = new XMLHttpRequest();
       let url = newsUrl;
       request.open('GET', url, true);
@@ -376,7 +384,7 @@ $(document).ready(function () {
               gRSY(singleDApp.rating) +
               `</td><td><span class="` +
               statusDetail +
-              `">â—</span></td></tr>`;
+              `">●</span></td></tr>`;
             $('.DAppsBody').append($(DAppBody));
             $('#DAppsListItem').append(
               '<option value="' +
@@ -424,7 +432,7 @@ $(document).ready(function () {
               gRSY(singleDApp.rating) +
               `</td><td><span class="` +
               statusDetail +
-              `">â—</span></td></tr>`;
+              `">●</span></td></tr>`;
             $('.DAppsBody').append($(DAppBody));
             $('#DAppsListItem').append(
               '<option value="' +
@@ -433,11 +441,12 @@ $(document).ready(function () {
                 singleDApp.name +
                 '</option>'
             );
-            $(document).ready(function () {
-              $('.app_' + singleDApp.id).on('click', function () {
-                gSDap(singleDApp.id);
-              });
-            });
+            // Not need as of now
+            // $(document).ready(function () {
+            //   $('.app_' + singleDApp.id).on('click', function () {
+            //     gSDap(singleDApp.id);
+            //   });
+            // });
           });
         }
       };
@@ -449,54 +458,56 @@ $(document).ready(function () {
 
     function generateSliderHtml(e) {
       return `
-        <div id="trending-apps-sliders" class="trending-apps-sliders">
-            <div class="slider-details">
-                <div class="slider-image">
-                    <img loading="lazy" src="${
-                      e.logoIconBig
-                    }" class="slider-image-logo">
-                </div>
-                <div class="slider-content">
-                    <div class="slider-content-top">
-                        <div class="left-content">
-                            <div class="tranding-btn">
-                                <img src="https://uploads-ssl.webflow.com/627394d54eece8c34647251a/630c73a4b066bf6a07c3b511_noun-star-115205.svg" class="image-36">
-                                <div class="text-block-34">MOST TRENDING</div>
-                            </div>
-                        </div>
-                        <div class="right-content">
-                            <div class="start-images">
-                                ${gRSY(e.rating)}
-                            </div>
-                            <div class="text-block-35 slider-content-top-users">
-                                (${e.totalUser})
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slider-content-middle">
-                        <h2 class="slider-title-text">${e.name}</h2>
-                        <p class="slider-content-paragraph">${e.description.substring(
-                          0,
-                          260
-                        )}...</p>
-                    </div>
-                    <div class="slider-content-bottom">
-                        <div class="left-content">
-                            <div class="w-layout-grid grid-30">
-                                <a data-id="${
-                                  e.id
-                                }" href="#" class="view-details btnmain font-16 w-button rm-mp">View details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+          <div id="trending-apps-sliders" class="trending-apps-sliders">
+              <div class="slider-details">
+                  <div class="slider-image">
+                      <img loading="lazy" src="${
+                        e.logoIconBig
+                      }" class="slider-image-logo">
+                  </div>
+                  <div class="slider-content">
+                      <div class="slider-content-top">
+                          <div class="left-content">
+                              <div class="tranding-btn">
+                                  <img src="https://uploads-ssl.webflow.com/627394d54eece8c34647251a/630c73a4b066bf6a07c3b511_noun-star-115205.svg" class="image-36">
+                                  <div class="text-block-34">MOST TRENDING</div>
+                              </div>
+                          </div>
+                          <div class="right-content">
+                              <div class="start-images">
+                                  ${gRSY(e.rating)}
+                              </div>
+                              <div class="text-block-35 slider-content-top-users">
+                                  (${e.totalUser})
+                              </div>
+                          </div>
+                      </div>
+                      <div class="slider-content-middle">
+                          <h2 class="slider-title-text">${e.name}</h2>
+                          <p class="slider-content-paragraph">${e.description.substring(
+                            0,
+                            260
+                          )}...</p>
+                      </div>
+                      <div class="slider-content-bottom">
+                          <div class="left-content">
+                              <div class="w-layout-grid grid-30">
+                                  <a data-id="${e.id}" href="#" class="app_${
+        e.id
+      } view-details btnmain font-16 w-button rm-mp" id="${
+        e.id
+      }">View details</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      `;
     }
 
     let edexaTopThreeDAppUrl = new URL(
-      'https://edexawebsiteapi.io-world.com/marketplace/trending-DApps'
+      `${getApiUrl()}/marketplace/trending-DApps`
     );
 
     function gTTDap() {
@@ -508,6 +519,9 @@ $(document).ready(function () {
           $('.loder').css('display', 'none');
           t.data.data.forEach((e) => {
             $('.single-item').slick('slickAdd', generateSliderHtml(e));
+            $('.app_' + e.id).on('click', function () {
+              gSDap(e.id);
+            });
           });
         }
         $('.loder').css('display', 'none');
@@ -548,11 +562,13 @@ $(document).ready(function () {
       var progress = "<div class='inProgress inProgress" + index + "'></div>";
       $(this)(progress);
     });
+
     function startProgressbar() {
       resetProgressbar();
       percentTime = 0;
       tick = setInterval(interval, 10);
     }
+
     function interval() {
       if (
         $(
@@ -580,13 +596,16 @@ $(document).ready(function () {
         }
       }
     }
+
     function resetProgressbar() {
       $('.inProgress').css({
         width: 0 + '%',
       });
       clearInterval(tick);
     }
+
     startProgressbar();
+
     // End ticking machine
     $('.item').click(function () {
       clearInterval(tick);
@@ -610,7 +629,7 @@ $(document).ready(function () {
 
     function getAllNews() {
       $('.loder').css('display', 'flex');
-      let newsUrl = new URL('https://edexawebsiteapi.io-world.com/blogs');
+      let newsUrl = new URL(`${getApiUrl()}/blogs`);
       let request = new XMLHttpRequest();
       let url = newsUrl;
       request.open('GET', url, true);
@@ -717,7 +736,136 @@ $(document).ready(function () {
       request.send();
     }
 
+    function getAllCategory() {
+      let newsUrl = new URL(`${getApiUrl()}/category`);
+      let request = new XMLHttpRequest();
+      let url = newsUrl;
+      request.open('GET', url, true);
+      request.onload = function () {
+        let data = JSON.parse(this.response);
+        if (request.status >= 200 && request.status < 400) {
+          data.data.data.forEach((singleCategory) => {
+            let template =
+              `<h6 id="` +
+              singleCategory.id +
+              `" class="news-search-filters-title-2">` +
+              singleCategory.name +
+              `</h6>
+            `;
+            $('.news-search-filters').append(template);
+          });
+        }
+      };
+      request.send();
+    }
+
+    $(document).on('click', '.news-search-filters-title-2', function () {
+      var clickedId = $(this).attr('id');
+      var mainUrl =
+        clickedId === 'All'
+          ? `${getApiUrl()}/blogs`
+          : `${getApiUrl()}/blogs?filter=` + clickedId;
+
+      console.log('Clicked ID:', clickedId);
+      console.log('API URL:', mainUrl);
+
+      $.ajax({
+        type: 'get',
+        url: mainUrl,
+        dataType: 'json',
+        success: function (data) {
+          var perpage = 4;
+          var pagenum = 1;
+
+          if (data.data.generalBlog.length === 0) {
+            $('.latest-news-list-2').html(
+              "<div style='text-align: center;'>No data Found......!</div>"
+            );
+            $('.pagination-div').css('display', 'none');
+            return;
+          }
+
+          if (data.data.generalBlog.length <= perpage) {
+            $('.pagination-div').css('display', 'none');
+          } else {
+            $('.pagination-div').css('display', 'flex');
+          }
+
+          createpagination(pagenum);
+
+          // Clear the container before appending new data
+          $('.latest-news-list-2').empty();
+
+          data.data.generalBlog.forEach(function (latestNewsSingleNews) {
+            var template4 =
+              `<a href="https://edexa.network/news-detail?title=` +
+              latestNewsSingleNews.title.split(' ').join('-') +
+              `&id=` +
+              latestNewsSingleNews.id +
+              `" class="link-block-15 w-inline-block">
+                <div data-w-id="335d0e66-bdae-01a3-d690-538783c710ed" class="latest-news-item-2">
+                  <div class="latest-news-item-image-3">
+                    <img src="` +
+              latestNewsSingleNews.blogImage +
+              `" loading="lazy" 
+                    sizes="(max-width: 479px) 83vw, (max-width: 767px) 90vw, 
+                    (max-width: 991px) 32vw, (max-width: 1439px) 317.484375px, 488.140625px" 
+                    srcset="` +
+              latestNewsSingleNews.blogImage +
+              ` 500w, ` +
+              latestNewsSingleNews.blogImage +
+              ` 800w, 
+                    ` +
+              latestNewsSingleNews.blogImage +
+              ` 1080w, ` +
+              latestNewsSingleNews.blogImage +
+              ` 1600w, 
+                    ` +
+              latestNewsSingleNews.blogImage +
+              ` 1640w" alt="" 
+                    class="latest-news-item-image-single-2">
+                    <h6 class="latest-news-item-image-single-title-2">` +
+              latestNewsSingleNews.category.name +
+              `</h6>
+                  </div>
+                  <div class="latest-news-item-content">
+                    <div class="latest-news-item-date-time">
+                      <h5 class="heading-11latest-news-item-3">` +
+              getDateFormate(latestNewsSingleNews.createdAt) +
+              `</h5>
+                    </div>
+                    <div class="latest-news-item-title">
+                      <h2 class="heading-10-latest-news-item-3">` +
+              latestNewsSingleNews.title +
+              `</h2>
+                    </div>
+                    <div class="latest-news-item-description">
+                      <div class="text-block-68">` +
+              latestNewsSingleNews.shortDescription +
+              `</div>
+                    </div>
+                  </div>
+                </div>
+              </a>`;
+            $('.latest-news-list-2').append($(template4));
+          });
+        },
+        error: function () {
+          $('.latest-news-list-2').html(
+            "<div style='text-align: center;'>No data Found......!</div>"
+          );
+          $('.pagination-div').css('display', 'none');
+        },
+      });
+    });
+
+    getAllCategory();
+
     getAllNews();
+
+    var total_records = localStorage.getItem('total_records');
+    var perpage = 5;
+    var total_pages = Math.ceil(total_records / perpage);
 
     $(document).ready(function () {
       let pagenum = 1;
@@ -740,11 +888,7 @@ $(document).ready(function () {
         );
       }
 
-      let total_records = localStorage.getItem('total_records');
-      let perpage = 5;
-      let total_pages = Math.ceil(total_records / perpage);
-
-      let i = 0;
+      var i = 0;
       for (i = 0; i <= 5; i++) {
         if (pagenum == pagenum + i) {
           $('#page_container').append(
@@ -755,11 +899,11 @@ $(document).ready(function () {
         } else {
           if (pagenum + i <= total_pages) {
             $('#page_container').append(
-              "<li class='page-item' onclick='makecall(" +
+              `<li class='page-item' onclick='${makecall(
+                pagenum + i
+              )}'><a href='javascript:void(0)' class='page-link'>" +
                 (pagenum + i) +
-                ")'><a href='javascript:void(0)' class='page-link'>" +
-                (pagenum + i) +
-                '</a></li>'
+                '</a></li>`
             );
           }
         }
@@ -782,8 +926,7 @@ $(document).ready(function () {
       $('.pagination-div').css('display', 'flex');
       $.ajax({
         type: 'get',
-        url:
-          'https://edexawebsiteapi.io-world.com/blogs?limit=5&page=' + pagenum,
+        url: `${getApiUrl()}/blogs?limit=5&page=` + pagenum,
         dataType: 'json',
         success: function (data) {
           /*if (data.data.generalBlog.length <= perpage) {
@@ -873,16 +1016,19 @@ $(document).ready(function () {
       $('.pagination-div').css('display', 'flex');
       var perpage = 4;
       var pagenum = 1;
+
       if (searchText == '') {
         $('.latest-news-list-2').html('');
         createpagination(pagenum);
         fetch_data(perpage, pagenum);
         $('.pagination-div').css('display', 'flex');
         $('.loder').css('display', 'none');
+        return; // Exit the function if searchText is empty
       }
+
       $.ajax({
         type: 'get',
-        url: 'https://edexawebsiteapi.io-world.com/blogs?search=' + searchText,
+        url: `${getApiUrl()}/blogs?search=` + encodeURIComponent(searchText),
         dataType: 'json',
         success: function (data) {
           $('.loder').css('display', 'none');
@@ -971,9 +1117,7 @@ $(document).ready(function () {
     };
 
     function getSingleNews() {
-      let newsUrl = new URL(
-        'https://edexawebsiteapi.io-world.com/blogs/' + $.urlParam('id')
-      );
+      let newsUrl = new URL(`${getApiUrl()}/blogs/` + $.urlParam('id'));
       let request = new XMLHttpRequest();
       let url = newsUrl;
       request.open('GET', url, true);
@@ -988,7 +1132,7 @@ $(document).ready(function () {
           let template =
             `<div class="back-button-2">
             <a href="news" class="link-block-2-single-news w-inline-block">
-              <h1 class="heading-196">â† Back to News</h1>
+              <h1 class="heading-196">←Back to News</h1>
             </a>
           </div>
           <div class="single-blog-title">
@@ -1020,9 +1164,9 @@ $(document).ready(function () {
             `&id=` +
             data.data.id +
             `" class="share-link w-inline-block"><img src="images/Path-4211.svg" loading="lazy" alt="" class="image-2-single-news"></a>
+              </div>
             </div>
-          </div>
-          <div class="blog-single-image"><img src="` +
+            <div class="blog-single-image"><img src="` +
             data.data.blogImage +
             `" loading="lazy" sizes="(max-width: 479px) 92vw, (max-width: 767px) 95vw, (max-width: 991px) 96vw, (max-width: 1439px) 960px, 1440px" srcset="` +
             data.data.blogImage +
@@ -1059,11 +1203,9 @@ $(document).ready(function () {
       request.open('GET', url, true);
       request.onload = function () {
         let data = JSON.parse(this.response);
-        console.log('data', data);
         for (let i = 0; i < 3; i++) {
           let title = data.items[i].title;
           let pubDate = data.items[i].pubDate;
-          let description = data.items[i].description;
           let today = new Date(pubDate).toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
